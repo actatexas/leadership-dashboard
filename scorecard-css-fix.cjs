@@ -1,4 +1,5 @@
-
+const fs = require("fs");
+const css = `
 .grade-badge {
   display: inline-flex;
   align-items: center;
@@ -191,3 +192,7 @@
 @media (max-width: 480px) {
   .tool-grid { grid-template-columns: 1fr; }
 }
+`;
+
+fs.writeFileSync("src/scorecard-styles.css", css, "utf8");
+console.log("Done! scorecard-styles.css regenerated.");

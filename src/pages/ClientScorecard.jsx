@@ -22,14 +22,8 @@ const TOOLS = [
 function fmt(val) {
   return "$" + Number(val || 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
-function pct(val) {
-  return (Number(val || 0) * 100).toFixed(1) + "%";
-}
-
-function getAdoptedCount(tools) {
-  return Object.values(tools || {}).filter(Boolean).length;
-}
+function pct(val) { return (Number(val || 0) * 100).toFixed(1) + "%"; }
+function getAdoptedCount(tools) { return Object.values(tools || {}).filter(Boolean).length; }
 
 function calculateGrade(marginHealth, toolsAdopted, tcpFit) {
   const marginScore = Math.max(0, Math.min(1, Number(marginHealth || 0))) * 100;
@@ -43,10 +37,7 @@ function calculateGrade(marginHealth, toolsAdopted, tcpFit) {
   return "D";
 }
 
-function revPerSeatPerMonth(quarterly, seats) {
-  if (!seats || seats === 0) return 0;
-  return Number(quarterly || 0) / Number(seats) / 3;
-}
+function revPerSeatPerMonth(q, s) { return (!s || s === 0) ? 0 : Number(q || 0) / Number(s) / 3; }
 
 export default function ClientScorecard() {
   const { user } = useAuth();
@@ -74,18 +65,14 @@ export default function ClientScorecard() {
     await supabase.from("client_scorecards")
       .update({ tools_adopted: tools, overall_grade: newGrade, updated_at: new Date().toISOString() })
       .eq("id", client.id);
-    setClients(prev => prev.map(c =>
-      c.id === client.id ? { ...c, tools_adopted: tools, overall_grade: newGrade } : c
-    ));
+    setClients(prev => prev.map(c => c.id === client.id ? { ...c, tools_adopted: tools, overall_grade: newGrade } : c));
   }
 
   async function updateNotes(client, notes) {
     await supabase.from("client_scorecards")
       .update({ notes, updated_at: new Date().toISOString() })
       .eq("id", client.id);
-    setClients(prev => prev.map(c =>
-      c.id === client.id ? { ...c, notes } : c
-    ));
+    setClients(prev => prev.map(c => c.id === client.id ? { ...c, notes } : c));
   }
 
   let filtered = clients;
@@ -121,17 +108,15 @@ export default function ClientScorecard() {
     const stackPct = getAdoptedCount(c.tools_adopted) / TOOLS.length;
     return margin > 0.4 && stackPct < 0.7;
   });
-
   const atRiskClients = clients.filter(c => Number(c.margin_health || 0) < 0.15);
 
   function handleSort(col) {
     if (sortBy === col) setSortDir(d => d === "asc" ? "desc" : "asc");
     else { setSortBy(col); setSortDir("asc"); }
   }
-
   function sortArrow(col) {
     if (sortBy !== col) return "";
-    return sortDir === "asc" ? " \u25B2" : " \u25BC";
+    return sortDir === "asc" ? " [asc]" : " [desc]";
   }
 
   if (loading) return <div className="page-loading">Loading scorecards...</div>;
@@ -142,20 +127,10 @@ export default function ClientScorecard() {
       <p className="page-subtitle">Profitability, tool adoption, and target client fit at a glance.</p>
 
       <div className="metric-grid">
-        <div className="metric-card metric-blue">
-          <div className="metric-label">Total Clients</div>
-          <div className="metric-value">{clients.length}</div>
-        </div>
-        <div className="metric-card metric-green">
-          <div className="metric-label">Avg Margin</div>
-          <div className="metric-value">{(avgMargin * 100).toFixed(1)}%</div>
-        </div>
-        <div className="metric-card metric-purple">
-          <div className="metric-label">Avg Stack Adoption</div>
-          <div className="metric-value">{avgStack.toFixed(1)} / {TOOLS.length}</div>
-        </div>
-        <div className="metric-card metric-yellow">
-          <div className="metric-label">Grade Distribution</div>
+        <div className="metric-card metric-blue"><div className="metric-label">Total Clients</div><div className="metric-value">{clients.length}</div></div>
+        <div className="metric-card metric-green"><div className="metric-label">Avg Margin</div><div className="metric-value">{(avgMargin * 100).toFixed(1)}%</div></div>
+        <div className="metric-card metric-purple"><div className="metric-label">Avg Stack Adoption</div><div className="metric-value">{avgStack.toFixed(1)} / {TOOLS.length}</div></div>
+        <div className="metric-card metric-yellow"><div className="metric-label">Grade Distribution</div>
           <div className="metric-value" style={{ fontSize: "0.95rem", display: "flex", gap: "0.5rem" }}>
             <span className="grade-badge grade-A">A:{gradeCount.A}</span>
             <span className="grade-badge grade-B">B:{gradeCount.B}</span>
@@ -179,20 +154,18 @@ export default function ClientScorecard() {
       <div className="table-card">
         <div className="table-wrapper">
           <table className="data-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th onClick={() => handleSort("grade")} style={{ cursor: "pointer" }}>Grade{sortArrow("grade")}</th>
-                <th onClick={() => handleSort("client_code")} style={{ cursor: "pointer" }}>Client{sortArrow("client_code")}</th>
-                <th>Tier</th>
-                <th onClick={() => handleSort("quarterly_revenue")} style={{ cursor: "pointer" }}>Qtr Revenue{sortArrow("quarterly_revenue")}</th>
-                <th>Seats</th>
-                <th>Rev/Seat/Mo</th>
-                <th onClick={() => handleSort("margin_health")} style={{ cursor: "pointer" }}>Margin{sortArrow("margin_health")}</th>
-                <th onClick={() => handleSort("stack")} style={{ cursor: "pointer" }}>Stack{sortArrow("stack")}</th>
-                <th>TCP Fit</th>
-              </tr>
-            </thead>
+            <thead><tr>
+              <th></th>
+              <th onClick={() => handleSort("grade")} style={{ cursor: "pointer" }}>Grade{sortArrow("grade")}</th>
+              <th onClick={() => handleSort("client_code")} style={{ cursor: "pointer" }}>Client{sortArrow("client_code")}</th>
+              <th>Tier</th>
+              <th onClick={() => handleSort("quarterly_revenue")} style={{ cursor: "pointer" }}>Qtr Revenue{sortArrow("quarterly_revenue")}</th>
+              <th>Seats</th>
+              <th>Rev/Seat/Mo</th>
+              <th onClick={() => handleSort("margin_health")} style={{ cursor: "pointer" }}>Margin{sortArrow("margin_health")}</th>
+              <th onClick={() => handleSort("stack")} style={{ cursor: "pointer" }}>Stack{sortArrow("stack")}</th>
+              <th>TCP Fit</th>
+            </tr></thead>
             <tbody>
               {filtered.map(c => {
                 const adopted = getAdoptedCount(c.tools_adopted);
@@ -204,7 +177,7 @@ export default function ClientScorecard() {
                 const rpm = revPerSeatPerMonth(c.quarterly_revenue, c.seats);
                 return (
                   <><tr key={c.id} style={{ cursor: "pointer" }} onClick={() => setExpandedId(isExpanded ? null : c.id)}>
-                      <td><button className="expand-btn">{isExpanded ? "\u25BC" : "\u25B6"}</button></td>
+                      <td><button className="expand-btn">{isExpanded ? "[-]" : "[+]"}</button></td>
                       <td><span className={"grade-badge grade-" + c.overall_grade}>{c.overall_grade}</span></td>
                       <td className="client-name">{c.client_code}</td>
                       <td>{c.revenue_tier}</td>
@@ -212,29 +185,20 @@ export default function ClientScorecard() {
                       <td>{c.seats}</td>
                       <td>{fmt(rpm)}</td>
                       <td className={marginClass}>{pct(margin)}</td>
-                      <td>
-                        <div className="stack-bar-container">
-                          <div className="stack-bar"><div className={"stack-bar-fill " + barClass} style={{ width: stackPct + "%" }}></div></div>
-                          <span className="stack-text">{adopted}/{TOOLS.length}</span>
-                        </div>
-                      </td>
-                      <td>
-                        <div className="tcp-dots">
-                          {[1,2,3,4].map(n => (<div key={n} className={"tcp-dot" + (n <= (c.tcp_fit || 0) ? " filled" : "")}></div>))}
-                        </div>
-                      </td>
+                      <td><div className="stack-bar-container"><div className="stack-bar"><div className={"stack-bar-fill " + barClass} style={{ width: stackPct + "%" }}></div></div><span className="stack-text">{adopted}/{TOOLS.length}</span></div></td>
+                      <td><div className="tcp-dots">{[1,2,3,4].map(n => (<div key={n} className={"tcp-dot" + (n <= (c.tcp_fit || 0) ? " filled" : "")}></div>))}</div></td>
                     </tr>
                     {isExpanded && (
                       <tr key={c.id + "-expand"} className="expand-row">
                         <td colSpan={10}>
                           <div className="expand-content">
-                            <h4 style={{ color: "#cbd5e1", marginBottom: "0.75rem" }}>{c.client_code} \u2014 Tool Adoption</h4>
+                            <h4 style={{ color: "#cbd5e1", marginBottom: "0.75rem" }}>{c.client_code} - Tool Adoption</h4>
                             <div className="tool-grid">
                               {TOOLS.map(t => {
                                 const isAdopted = c.tools_adopted?.[t.key] || false;
                                 return (
                                   <div key={t.key} className={"tool-item" + (isAdopted ? " adopted" : "")} onClick={(e) => { e.stopPropagation(); toggleTool(c, t.key); }}>
-                                    <div className="tool-checkbox"><span className="tool-check-mark">\u2713</span></div>
+                                    <div className="tool-checkbox"><span className="tool-check-mark">X</span></div>
                                     <span className="tool-label">{t.label}</span>
                                   </div>
                                 );
@@ -260,7 +224,7 @@ export default function ClientScorecard() {
         <div className="opportunity-section">
           <div className="opp-card opp-upsell">
             <div className="opp-header">
-              <h4>\uD83D\uDCC8 Upsell Opportunities</h4>
+              <h4>Upsell Opportunities</h4>
               <span className="stack-text">High margin + low stack adoption</span>
             </div>
             <div className="opp-list">
@@ -270,7 +234,7 @@ export default function ClientScorecard() {
                   <div key={c.id} className="opp-item">
                     <div>
                       <span className="opp-client">{c.client_code}</span>
-                      <span className="opp-detail"> \u2014 Margin: {pct(c.margin_health)}, Stack: {getAdoptedCount(c.tools_adopted)}/{TOOLS.length}</span>
+                      <span className="opp-detail"> - Margin: {pct(c.margin_health)}, Stack: {getAdoptedCount(c.tools_adopted)}/{TOOLS.length}</span>
                       <div className="missing-tools">
                         {missingTools.map(t => (<span key={t.key} className="missing-tool-tag">{t.label}</span>))}
                       </div>
@@ -287,7 +251,7 @@ export default function ClientScorecard() {
         <div className="opportunity-section">
           <div className="opp-card opp-risk">
             <div className="opp-header">
-              <h4>\u26A0\uFE0F At-Risk Clients</h4>
+              <h4>At-Risk Clients</h4>
               <span className="stack-text">Margin below 15%</span>
             </div>
             <div className="opp-list">
