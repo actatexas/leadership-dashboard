@@ -2,12 +2,13 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const navItems = [
-  { to: "",              icon: "🏠", label: "Executive",      badge: null },
-  { to: "sales",         icon: "💰", label: "Sales",          badge: null },
-  { to: "client-health", icon: "👥", label: "Client Health",  badge: null },
-  { to: "mrr-calculator",icon: "🧮", label: "MRR Calculator", badge: null },
-  { to: "operations",    icon: "⚙️",  label: "Operations",    badge: "Soon" },
-  { to: "accounting",    icon: "📋", label: "Accounting",     badge: "Soon" },
+  { to: "",              icon: "🏠", label: "Executive",        badge: null },
+  { to: "sales",         icon: "💰", label: "Sales",            badge: null },
+  { to: "client-health", icon: "👥", label: "Client Health",    badge: null },
+  { to: "scorecard",     icon: "📊", label: "Client Scorecard", badge: null },
+  { to: "mrr-calculator",icon: "🧮", label: "MRR Calculator",   badge: null },
+  { to: "operations",    icon: "⚙️",  label: "Operations",      badge: "Soon" },
+  { to: "accounting",    icon: "📋", label: "Accounting",       badge: "Soon" },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -22,7 +23,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
       <aside className={"sidebar" + (isOpen ? " sidebar-open" : "")}>
         <div className="sidebar-brand">
-          <span className="brand-icon">📊</span>
+          <span className="brand-icon">\uD83D\uDCCA</span>
           <div>
             <div className="brand-name">CAPSTONE WORKS</div>
             <div className="brand-sub">Leadership Dashboard</div>
