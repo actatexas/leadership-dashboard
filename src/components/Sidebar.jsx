@@ -23,7 +23,7 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
       <aside className={"sidebar" + (isOpen ? " sidebar-open" : "")}>
         <div className="sidebar-brand">
-          <img className="brand-logo" style={{width:"36px",height:"36px"}} src="/leadership-dashboard/logo.png" alt="Capstone" />
+          <img className="brand-logo" src="/leadership-dashboard/logo.png" alt="Capstone" />
           <div>
             <div className="brand-name">CAPSTONE WORKS</div>
             <div className="brand-sub">Leadership Dashboard</div>

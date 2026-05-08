@@ -37,6 +37,14 @@ function calculateGrade(marginHealth, toolsAdopted, tcpFit) {
   return "D";
 }
 
+function getRevenueTier(quarterlyRevenue) {
+  var rev = Number(quarterlyRevenue || 0);
+  if (rev >= 45000) return 4;
+  if (rev >= 30000) return 3;
+  if (rev >= 15000) return 2;
+  return 1;
+}
+
 function revPerSeatPerMonth(q, s) { return (!s || s === 0) ? 0 : Number(q || 0) / Number(s) / 3; }
 
 export default function ClientScorecard() {
@@ -51,10 +59,23 @@ export default function ClientScorecard() {
 
   useEffect(() => { fetchClients(); }, []);
 
-  async function fetchClients() {
+ async function fetchClients() {
     setLoading(true);
-    const { data } = await supabase.from("client_scorecards").select("*").order("client_code");
-    setClients(data || []);
+    var result = await supabase.from("client_scorecards").select("*").order("client_code");
+    var rows = result.data || [];
+    for (var i = 0; i < rows.length; i++) {
+      var c = rows[i];
+      var correctGrade = calculateGrade(c.margin_health, c.tools_adopted, c.tcp_fit);
+      var correctTier = getRevenueTier(c.quarterly_revenue);
+      if (c.overall_grade !== correctGrade || c.revenue_tier !== correctTier) {
+        await supabase.from("client_scorecards")
+          .update({ overall_grade: correctGrade, revenue_tier: correctTier })
+          .eq("id", c.id);
+        rows[i].overall_grade = correctGrade;
+        rows[i].revenue_tier = correctTier;
+      }
+    }
+    setClients(rows);
     setLoading(false);
   }
 
@@ -180,7 +201,7 @@ export default function ClientScorecard() {
                       <td><button className="expand-btn">{isExpanded ? "[-]" : "[+]"}</button></td>
                       <td><span className={"grade-badge grade-" + c.overall_grade}>{c.overall_grade}</span></td>
                       <td className="client-name">{c.client_code}</td>
-                      <td>{c.revenue_tier}</td>
+                      <td>T{getRevenueTier(c.quarterly_revenue)}</td>
                       <td>{fmt(c.quarterly_revenue)}</td>
                       <td>{c.seats}</td>
                       <td>{fmt(rpm)}</td>
