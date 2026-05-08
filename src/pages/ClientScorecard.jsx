@@ -7,16 +7,18 @@ const TOOLS = [
   { key: "sentinel_one", label: "Sentinel One" },
   { key: "easydmarc", label: "EasyDMARC" },
   { key: "axcient", label: "Axcient" },
-  { key: "password_rotation", label: "Password Rotation Tool" },
+  { key: "password_rotation", label: "QuickPass" },
   { key: "connectbooster", label: "ConnectBooster" },
   { key: "lifecycle_insights", label: "LifeCycle Insights" },
   { key: "pii_protect", label: "PII Protect" },
   { key: "exclaimer", label: "Exclaimer" },
   { key: "actifile", label: "Actifile" },
-  { key: "web_filtering", label: "Anywhere Web Content Filtering" },
+  { key: "managed_firewall", label: "Capstone Managed Firewall" },
+  { key: "managed_switch", label: "Capstone Managed Switch" },
+  { key: "managed_aps", label: "Capstone Managed APs" },
   { key: "myglue", label: "MyGlue" },
   { key: "blackpoint", label: "BlackPoint Cyber" },
-  { key: "network_backups", label: "Network Mapping & Device Backups" },
+  { key: "connectsecure", label: "ConnectSecure" },
 ];
 
 function fmt(val) {
